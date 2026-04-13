@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LocalShare</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ionicons for beautiful icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Header -->
+        <header class="glass-panel">
+            <div class="logo">
+                <ion-icon name="share-social"></ion-icon>
+                <h1>LocalShare</h1>
+            </div>
+            
+            <div class="connection-info">
+                <div id="qr-container" class="qr-container hidden">
+                    <p>Scan to connect mobile</p>
+                    <img id="qr-image" src="" alt="QR Code">
+                </div>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    <span id="status-text">Connecting...</span>
+                </div>
+                <button id="show-qr-btn" class="icon-btn" title="Show QR Code">
+                    <ion-icon name="qr-code-outline"></ion-icon>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat / Shared Area -->
+        <main class="chat-container glass-panel" id="drop-zone">
+            <div class="drop-overlay hidden" id="drop-overlay">
+                <ion-icon name="cloud-upload-outline"></ion-icon>
+                <h2>Drop file here to share</h2>
+            </div>
+            
+            <div class="messages" id="messages">
+                <!-- Messages will appear here -->
+                <div class="message system-msg">
+                    <p>Session started. Files will be permanently deleted once all devices disconnect or server shuts down.</p>
+                </div>
+            </div>
+
+            <!-- Upload Progress -->
+            <div id="upload-progress-container" class="upload-progress hidden">
+                <div class="progress-info">
+                    <span id="upload-filename">Uploading...</span>
+                    <span id="upload-percent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="upload-fill"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="input-area glass-panel">
+            <button id="file-btn" class="icon-btn">
+                <ion-icon name="attach-outline"></ion-icon>
+            </button>
+            <input type="file" id="file-input" class="hidden">
+            
+            <textarea id="msg-input" placeholder="Type a message or paste a link..." rows="1"></textarea>
+            
+            <button id="send-btn" class="primary-btn">
+                <ion-icon name="send"></ion-icon>
+            </button>
+        </footer>
+    </div>
+
+    <!-- Token Error Overlay -->
+    <div id="auth-error" class="overlay hidden">
+        <div class="modal glass-panel">
+            <ion-icon name="lock-closed-outline" class="error-icon"></ion-icon>
+            <h2>Access Denied</h2>
+            <p>Invalid or missing security token.</p>
+            <p>Please scan the QR code from the host computer to connect securely.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

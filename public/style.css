@@ -1,0 +1,477 @@
+:root {
+    --bg-color: #0f172a; /* Slate 900 */
+    --panel-bg: rgba(30, 41, 59, 0.7); /* Slate 800 */
+    --panel-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #3b82f6; /* Blue 500 */
+    --accent-hover: #2563eb;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --own-msg-bg: #3b82f6;
+    --other-msg-bg: rgba(51, 65, 85, 0.8);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    touch-action: none; /* Prevent bounce scroll */
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-primary);
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 900px;
+    height: 100dvh;
+    padding: 0.5rem;
+    gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .app-container {
+        height: 95vh;
+    }
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent-color);
+}
+
+.logo h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.logo ion-icon {
+    font-size: 1.5rem;
+}
+
+.connection-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--error-color);
+    box-shadow: 0 0 8px var(--error-color);
+    transition: all 0.3s ease;
+}
+
+.status.connected .status-dot {
+    background-color: var(--success-color);
+    box-shadow: 0 0 8px var(--success-color);
+}
+
+.qr-container {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 100;
+    color: #000;
+    text-align: center;
+    animation: fadeInDown 0.3s ease;
+}
+
+.qr-container img {
+    width: 150px;
+    height: 150px;
+    margin-top: 0.5rem;
+}
+
+.qr-container p {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Chat Area */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--panel-border) transparent;
+}
+
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+.messages::-webkit-scrollbar-thumb {
+    background: var(--panel-border);
+    border-radius: 6px;
+}
+
+/* Message Bubbles */
+.message {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease;
+    line-height: 1.4;
+    position: relative;
+}
+
+.message.own {
+    align-self: flex-end;
+    background: var(--own-msg-bg);
+    border-bottom-right-radius: 4px;
+    color: #fff;
+}
+
+.message.other {
+    align-self: flex-start;
+    background: var(--other-msg-bg);
+    border-bottom-left-radius: 4px;
+}
+
+.system-msg {
+    align-self: center;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: center;
+    max-width: 90%;
+    border: 1px dashed var(--panel-border);
+}
+
+.msg-sender {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Media in messages */
+.message img, .message video {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.message audio {
+    margin-top: 0.5rem;
+    height: 40px;
+    border-radius: 20px;
+    outline: none;
+}
+
+.file-attachment {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(0,0,0,0.2);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.file-attachment ion-icon {
+    font-size: 2rem;
+}
+
+.file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+a.download-btn {
+    color: inherit;
+    text-decoration: none;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+a.download-btn:hover {
+    transform: scale(1.1);
+}
+
+.msg-time {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    text-align: right;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Input Area */
+.input-area {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+textarea {
+    flex: 1;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--panel-border);
+    border-radius: 20px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    resize: none;
+    outline: none;
+    transition: border-color 0.3s;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    max-height: 120px;
+}
+
+textarea:focus {
+    border-color: var(--accent-color);
+}
+
+.icon-btn, .primary-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+}
+
+.icon-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.1);
+}
+
+.primary-btn {
+    background: var(--accent-color);
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.primary-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.05);
+}
+
+/* Drop Overlay */
+.drop-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.9);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    border: 3px dashed var(--accent-color);
+    border-radius: 16px;
+    pointer-events: none;
+}
+
+.drop-overlay ion-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 2s infinite;
+}
+
+/* Upload Progress */
+.upload-progress {
+    padding: 1rem 1.5rem;
+    background: rgba(0,0,0,0.3);
+    border-top: 1px solid var(--panel-border);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-color);
+    width: 0%;
+    transition: width 0.2s ease;
+}
+
+/* Overlays */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: var(--error-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(16, 185, 129, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 2000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease forwards;
+}
+
+.toast-error {
+    background: rgba(239, 68, 68, 0.9);
+}
+
+.toast ion-icon {
+    font-size: 1.2rem;
+}
+
+.toast.fade-out {
+    animation: fadeOutDown 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes fadeOutDown {
+    from { opacity: 1; transform: translate(-50%, 0); }
+    to { opacity: 0; transform: translate(-50%, 20px); }
+}
