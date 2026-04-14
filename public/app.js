@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     fileInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
-            uploadFile(e.target.files[0]);
+            uploadFiles(e.target.files);
             fileInput.value = ''; // reset
         }
     });
@@ -246,18 +246,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         const dt = e.dataTransfer;
         const files = dt.files;
         if (files.length > 0) {
-            uploadFile(files[0]);
+            uploadFiles(files);
         }
     });
 
-    async function uploadFile(file) {
+    async function uploadFiles(files) {
         uploadProgressContainer.classList.remove('hidden');
-        uploadFilename.textContent = file.name;
+        uploadFilename.textContent = files.length > 1 ? `Uploading ${files.length} files...` : files[0].name;
         uploadPercent.textContent = '0%';
         uploadFill.style.width = '0%';
 
         const formData = new FormData();
-        formData.append('file', file);
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
 
         try {
             const xhr = new XMLHttpRequest();
@@ -274,21 +276,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText);
-                    const msgData = {
-                        type: 'file',
-                        url: data.url,
-                        filename: data.filename,
-                        mimeType: data.type,
-                        time: getTimeString()
-                    };
-                    
-                    socket.emit('message', msgData);
-                    renderMessage(msgData, true);
+                    const dataArray = JSON.parse(xhr.responseText);
+                    dataArray.forEach(data => {
+                        const msgData = {
+                            type: 'file',
+                            url: data.url,
+                            filename: data.filename,
+                            mimeType: data.type,
+                            time: getTimeString()
+                        };
+                        
+                        socket.emit('message', msgData);
+                        renderMessage(msgData, true);
+                    });
                     
                     setTimeout(() => {
                         uploadProgressContainer.classList.add('hidden');
-                        showToast('Data shared successfully!', 'success');
+                        showToast(files.length > 1 ? 'Files shared successfully!' : 'File shared successfully!', 'success');
                     }, 500);
                 } else {
                     showToast('Upload failed: ' + xhr.responseText, 'error');
@@ -303,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             xhr.send(formData);
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error('Error uploading files:', error);
             uploadProgressContainer.classList.add('hidden');
         }
     }
