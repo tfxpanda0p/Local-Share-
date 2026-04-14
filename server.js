@@ -90,6 +90,30 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Middleware to dynamically intercept and inject author watermark into HTML
+app.use((req, res, next) => {
+    if (req.path === '/' || req.path === '/index.html') {
+        const indexPath = path.join(__dirname, 'public', 'index.html');
+        fs.readFile(indexPath, 'utf8', (err, data) => {
+            if (err) return next();
+            
+            const injectedScript = `
+    <!-- [SERVER INJECTED AUTHOR WATERMARK] -->
+    <script>
+        setTimeout(() => {
+            const style = 'color: #111; background: #00ffcc; font-size: 14px; font-weight: bold; padding: 10px 15px; border-radius: 5px; font-family: monospace; border: 2px solid #fff; box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);';
+            console.log('%c🛡️ LocalShare - Core Engine 🛡️\\n\\nCreated by: Subham Banerjee\\nGitHub: https://github.com/tfxpanda0p\\n\\nNotice: This watermark is dynamically injected server-side to protect original authorship.', style);
+        }, 500);
+    </script>
+`;
+            const modifiedHtml = data.replace('</body>', injectedScript + '</body>');
+            res.send(modifiedHtml);
+        });
+    } else {
+        next();
+    }
+});
+
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -236,7 +260,10 @@ app.get('/api/info', (req, res) => {
  */
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`\n===========================================`);
-    console.log(`LocalShare is running on PORT ${PORT}`);
+    console.log(`🛡️ LocalShare is running on PORT ${PORT}`);
+    console.log(`Created by: Subham Banerjee`);
+    console.log(`GitHub: https://github.com/tfxpanda0p`);
+    console.log(`-------------------------------------------`);
     console.log(`Scan the QR code below on your mobile device:`);
     console.log(`Or visit directly: ${connectUrl}`);
     console.log(`===========================================\n`);
