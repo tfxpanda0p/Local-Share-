@@ -27,10 +27,7 @@
             </div>
             
             <div class="connection-info">
-                <div id="qr-container" class="qr-container hidden">
-                    <p>Scan to connect mobile</p>
-                    <img id="qr-image" src="" alt="QR Code">
-                </div>
+
                 <div class="status">
                     <span class="status-dot"></span>
                     <span id="status-text">Connecting...</span>
@@ -89,6 +86,20 @@
             <h2>Access Denied</h2>
             <p>Invalid or missing security token.</p>
             <p>Please scan the QR code from the host computer to connect securely.</p>
+        </div>
+    </div>
+
+    <!-- QR Code Overlay -->
+    <div id="qr-container" class="overlay hidden">
+        <div class="modal glass-panel" style="position: relative; padding: 2rem;">
+            <button id="close-qr-btn" class="icon-btn" style="position: absolute; top: 10px; right: 10px; font-size: 1.5rem;" onclick="document.getElementById('qr-container').classList.add('hidden')">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+            <h2 style="margin-bottom: 0.5rem;">Connect Device</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Scan the QR code to connect your mobile device securely.</p>
+            <div style="background: white; padding: 1rem; border-radius: 12px; display: inline-block;">
+                <img id="qr-image" src="" alt="QR Code" style="width: 250px; height: 250px; display: block;">
+            </div>
         </div>
     </div>
 

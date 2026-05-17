@@ -36,10 +36,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.history.replaceState({}, '', `?token=${token}`);
                 if (data.qrCodeUrl) {
                     qrImage.src = data.qrCodeUrl;
+                } else {
+                    showQrBtn.classList.add('hidden');
                 }
+            } else {
+                showQrBtn.classList.add('hidden');
             }
         } catch(e) {
             console.error(e);
+            showQrBtn.classList.add('hidden');
         }
     } else {
         // We have a token in URL. Let's still fetch QR code for display if needed
@@ -47,9 +52,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch('/api/info');
             if (res.ok) {
                 const data = await res.json();
-                if (data.qrCodeUrl) qrImage.src = data.qrCodeUrl;
+                if (data.qrCodeUrl) {
+                    qrImage.src = data.qrCodeUrl;
+                } else {
+                    showQrBtn.classList.add('hidden');
+                }
+            } else {
+                showQrBtn.classList.add('hidden');
             }
-        } catch(e){}
+        } catch(e) {
+            showQrBtn.classList.add('hidden');
+        }
     }
 
     if (!token) {
@@ -85,6 +98,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    socket.on('client_count', (count) => {
+        if (count > 1) {
+            // Other devices are connected! Hide QR!
+            showQrBtn.classList.add('hidden');
+            qrContainer.classList.add('hidden');
+        } else {
+            // Only we are connected
+            // Show QR button if we have the QR image
+            if (qrImage.getAttribute('src')) {
+                showQrBtn.classList.remove('hidden');
+            }
+        }
+    });
+
     // UI Elements
     const msgInput = document.getElementById('msg-input');
     const sendBtn = document.getElementById('send-btn');
@@ -108,12 +135,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     showQrBtn.addEventListener('click', () => {
-        qrContainer.classList.toggle('hidden');
+        qrContainer.classList.remove('hidden');
     });
 
-    // Hide QR when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!showQrBtn.contains(e.target) && !qrContainer.contains(e.target)) {
+    // Hide QR when clicking outside the modal
+    qrContainer.addEventListener('click', (e) => {
+        if (e.target === qrContainer) {
             qrContainer.classList.add('hidden');
         }
     });

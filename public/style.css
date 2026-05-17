@@ -121,31 +121,7 @@ header {
     box-shadow: 0 0 8px var(--success-color);
 }
 
-.qr-container {
-    position: absolute;
-    top: 120%;
-    right: 0;
-    background: #fff;
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    z-index: 100;
-    color: #000;
-    text-align: center;
-    animation: fadeInDown 0.3s ease;
-}
 
-.qr-container img {
-    width: 150px;
-    height: 150px;
-    margin-top: 0.5rem;
-}
-
-.qr-container p {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #333;
-}
 
 /* Chat Area */
 .chat-container {

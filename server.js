@@ -6,7 +6,6 @@ const multer = require('multer');                // File upload handling
 const path = require('path');                    // File path utilities
 const fs = require('fs');                        // File system operations
 const os = require('os');                        // OS-level utilities
-const qrcodeTerminal = require('qrcode-terminal'); // Show QR in terminal
 const qrcode = require('qrcode');                // Generate QR image
 const crypto = require('crypto');                // Generate secure tokens
 
@@ -197,6 +196,9 @@ io.on('connection', (socket) => {
 
     console.log(`[+] Device connected: ${socket.id} - ${deviceType}`);
 
+    // Emit client count to hide QR code when peers connect
+    io.emit('client_count', io.engine.clientsCount);
+
     /**
      * Handle incoming messages
      */
@@ -217,6 +219,9 @@ io.on('connection', (socket) => {
      */
     socket.on('disconnect', () => {
         console.log(`[-] Device disconnected: ${socket.id} - ${socket.deviceType}`);
+        setTimeout(() => {
+            io.emit('client_count', io.engine.clientsCount);
+        }, 0);
     });
 });
 
@@ -244,7 +249,7 @@ app.get('/api/info', (req, res) => {
     // Generate QR code image
     qrcode.toDataURL(
         connectUrl,
-        { color: { dark: '#ffffff', light: '#00000000' } },
+        { color: { dark: '#000000', light: '#00000000' } },
         (err, url) => {
             res.json({
                 qrCodeUrl: url,
@@ -267,9 +272,6 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`Scan the QR code below on your mobile device:`);
     console.log(`Or visit directly: ${connectUrl}`);
     console.log(`===========================================\n`);
-
-    // Show QR in terminal
-    qrcodeTerminal.generate(connectUrl, { small: true });
 
     /**
      * Cleanup function (runs on shutdown)
